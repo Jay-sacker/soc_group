@@ -1,7 +1,7 @@
 library IEEE;
 use IEEE.STD_LOGIC_1164.ALL;
-use IEEE.STD_LOGIC_ARITH.ALL;  -- Only if needed for your application
-use IEEE.STD_LOGIC_UNSIGNED.ALL; -- Only if needed for your application
+use IEEE.STD_LOGIC_ARITH.ALL;  
+use IEEE.STD_LOGIC_UNSIGNED.ALL; 
 
 entity SoC_Subsystem is
     port (
@@ -41,6 +41,14 @@ entity SoC_Subsystem is
         HWDATA3     : in  std_logic_vector(31 downto 0);
         HRDATA3     : out std_logic_vector(31 downto 0);
         HREADY3     : out std_logic;
+        
+                -- CCP specific pins
+        D0          : inout std_logic;
+        PIXCLK      : in std_logic;
+        HSYNC       : in std_logic;
+        VSYNC       : in std_logic;
+        MCLK        : out std_logic;
+        PWDN        : out std_logic;
 
         -- AHB Lite Interface for IP4 (UART)
         HCLK4       : in  std_logic;
@@ -144,7 +152,95 @@ architecture Behavioral of SoC_Subsystem is
     end component;
 
 begin
+ -- Instantiate IP1 (I2C)
+    IP1_I2C: entity work.IP_I2C
+        port map (
+            HCLK       => HCLK1,
+            HRESETn    => HRESETn1,
+            HADDR      => HADDR1,
+            HWRITE     => HWRITE1,
+            HWDATA     => HWDATA1,
+            HRDATA     => HRDATA1,
+            HREADY     => HREADY1,
+            SDA        => SDA1,
+            SCL        => SCL1
+        );
 
+    -- Instantiate IP2 (SPI)
+    IP2_SPI: entity work.IP_SPI
+        port map (
+            HCLK       => HCLK2,
+            HRESETn    => HRESETn2,
+            HADDR      => HADDR2,
+            HWRITE     => HWRITE2,
+            HWDATA     => HWDATA2,
+            HRDATA     => HRDATA2,
+            HREADY     => HREADY2,
+            MOSI       => MOSI2,
+            MISO       => MISO2,
+            SCK        => SCK2,
+            SS         => SS2
+        );
+
+    -- Instantiate IP3 (CCP) with CCP-specific pins
+    IP3_CCP: entity work.IP_CCP
+        port map (
+            HCLK       => HCLK3,
+            HRESETn    => HRESETn3,
+            HADDR      => HADDR3,
+            HWRITE     => HWRITE3,
+            HWDATA     => HWDATA3,
+            HRDATA     => HRDATA3,
+            HREADY     => HREADY3,
+            D0         => D0,
+            PIXCLK     => PIXCLK,
+            HSYNC      => HSYNC,
+            VSYNC      => VSYNC,
+            MCLK       => MCLK,
+            PWDN       => PWDN
+        );
+
+    -- Instantiate IP4 (UART)
+    IP4_UART: entity work.IP_UART
+        port map (
+            HCLK       => HCLK4,
+            HRESETn    => HRESETn4,
+            HADDR      => HADDR4,
+            HWRITE     => HWRITE4,
+            HWDATA     => HWDATA4,
+            HRDATA     => HRDATA4,
+            HREADY     => HREADY4,
+            TXD        => TXD4,
+            RXD        => RXD4
+        );
+
+    -- Instantiate IP5 (SSI)
+    IP5_SSI: entity work.IP_SSI
+        port map (
+            HCLK       => HCLK5,
+            HRESETn    => HRESETn5,
+            HADDR      => HADDR5,
+            HWRITE     => HWRITE5,
+            HWDATA     => HWDATA5,
+            HRDATA     => HRDATA5,
+            HREADY     => HREADY5,
+            TXD        => TXD5,
+            RXD        => RXD5
+        );
+
+    -- Instantiate IP6 (SOSSI)
+    IP6_SOSSI: entity work.IP_SOSSI
+        port map (
+            HCLK       => HCLK6,
+            HRESETn    => HRESETn6,
+            HADDR      => HADDR6,
+            HWRITE     => HWRITE6,
+            HWDATA     => HWDATA6,
+            HRDATA     => HRDATA6,
+            HREADY     => HREADY6,
+            TXD        => TXD6,
+            RXD        => RXD6
+        );
     -- Instantiate the Arbiter component to handle AHB arbitration
     ARBITER: AHB_Arbiter
         port map (
