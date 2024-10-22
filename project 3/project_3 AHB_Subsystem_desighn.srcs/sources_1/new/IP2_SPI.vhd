@@ -3,13 +3,21 @@ use IEEE.STD_LOGIC_1164.ALL;
 
 entity IP_SPI is
     port (
-        HCLK       : in  std_logic;
-        HRESETn    : in  std_logic;
-        HADDR      : in  std_logic_vector(31 downto 0);
-        HWRITE     : in  std_logic;
-        HWDATA     : in  std_logic_vector(31 downto 0);
-        HRDATA     : out std_logic_vector(31 downto 0);
-        HREADY     : out std_logic;
+        HCLK          : in  std_logic;                         -- AHB clock signal
+        HRESETn       : in  std_logic; 
+        HADDR      : std_logic_vector(31 downto 0);
+        HWRITE     : std_logic;                    
+        HWDATA     : std_logic_vector(31 downto 0);
+        HRDATA     : std_logic_vector(31 downto 0);
+        HREADYOUT  : std_logic;                    
+        HRESP      : std_logic;                    
+        HSIZE      : std_logic_vector(2 downto 0); 
+        HBURST     : std_logic_vector(2 downto 0); 
+        HTRANS     : std_logic_vector(1 downto 0); 
+        HPROT      : std_logic_vector(3 downto 0); 
+        HMASTLOCK  : std_logic;
+        
+        
         MOSI       : inout std_logic;  -- Master Out Slave In
         MISO       : inout std_logic;  -- Master In Slave Out
         SCK        : in std_logic;     -- Serial Clock

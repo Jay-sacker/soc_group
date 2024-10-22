@@ -3,8 +3,8 @@
   <File Type="PA-TCL" Name="AHB_Arbiter.tcl"/>
   <File Type="REPORTS-TCL" Name="AHB_Arbiter_reports.tcl"/>
   <File Type="RDS-RDS" Name="AHB_Arbiter.vds"/>
-  <File Type="RDS-UTIL" Name="AHB_Arbiter_utilization_synth.rpt"/>
-  <File Type="RDS-UTIL-PB" Name="AHB_Arbiter_utilization_synth.pb"/>
+  <File Type="RDS-UTIL" Name="SoC_Subsystem_utilization_synth.rpt"/>
+  <File Type="RDS-UTIL-PB" Name="SoC_Subsystem_utilization_synth.pb"/>
   <File Type="RDS-DCP" Name="AHB_Arbiter.dcp"/>
   <FileSet Name="sources" Type="DesignSrcs" RelSrcDir="$PSRCDIR/sources_1" RelGenDir="$PGENDIR/sources_1">
     <Filter Type="Srcs"/>
