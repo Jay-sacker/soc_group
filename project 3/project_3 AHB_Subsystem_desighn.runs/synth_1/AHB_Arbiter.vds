@@ -1,17 +1,26 @@
-
-*** Running vivado
-    with args -log AHB_Arbiter.vds -m64 -product Vivado -mode batch -messageDb vivado.pb -notrace -source AHB_Arbiter.tcl
-
-
-
-****** Vivado v2024.1 (64-bit)
-  **** SW Build 5076996 on Wed May 22 18:37:14 MDT 2024
-  **** IP Build 5075265 on Wed May 22 21:45:21 MDT 2024
-  **** SharedData Build 5076995 on Wed May 22 18:29:18 MDT 2024
-  **** Start of session at: Tue Oct 22 11:16:41 2024
-    ** Copyright 1986-2022 Xilinx, Inc. All Rights Reserved.
-    ** Copyright 2022-2024 Advanced Micro Devices, Inc. All Rights Reserved.
-
+#-----------------------------------------------------------
+# Vivado v2024.1 (64-bit)
+# SW Build 5076996 on Wed May 22 18:37:14 MDT 2024
+# IP Build 5075265 on Wed May 22 21:45:21 MDT 2024
+# SharedData Build 5076995 on Wed May 22 18:29:18 MDT 2024
+# Start of session at: Tue Oct 22 11:16:41 2024
+# Process ID: 19756
+# Current directory: C:/Users/User/OneDrive/Documents/college/modules/year 4/Sytem on chip/soc_group/project 3/project_3 AHB_Subsystem_desighn.runs/synth_1
+# Command line: vivado.exe -log AHB_Arbiter.vds -product Vivado -mode batch -messageDb vivado.pb -notrace -source AHB_Arbiter.tcl
+# Log file: C:/Users/User/OneDrive/Documents/college/modules/year 4/Sytem on chip/soc_group/project 3/project_3 AHB_Subsystem_desighn.runs/synth_1/AHB_Arbiter.vds
+# Journal file: C:/Users/User/OneDrive/Documents/college/modules/year 4/Sytem on chip/soc_group/project 3/project_3 AHB_Subsystem_desighn.runs/synth_1\vivado.jou
+# Running On        :DESKTOP-SBD0BCP
+# Platform          :Windows Server 2016 or Windows 10
+# Operating System  :19045
+# Processor Detail  :Intel(R) Core(TM) i5-10210U CPU @ 1.60GHz
+# CPU Frequency     :2112 MHz
+# CPU Physical cores:4
+# CPU Logical cores :8
+# Host memory       :8352 MB
+# Swap memory       :13955 MB
+# Total Virtual     :22308 MB
+# Available Virtual :3928 MB
+#-----------------------------------------------------------
 source AHB_Arbiter.tcl -notrace
 create_project: Time (s): cpu = 00:00:10 ; elapsed = 00:00:12 . Memory (MB): peak = 514.297 ; gain = 196.457
 Command: read_checkpoint -auto_incremental -incremental {C:/Users/User/OneDrive/Documents/college/modules/year 4/Sytem on chip/soc_group/project 3/project_3 AHB_Subsystem_desighn.srcs/utils_1/imports/synth_1/SoC_Subsystem.dcp}

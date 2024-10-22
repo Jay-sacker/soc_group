@@ -46,6 +46,60 @@ entity SoC_Subsystem is
 end SoC_Subsystem;
 
 architecture Behavioral of SoC_Subsystem is
+
+    -- Declare AHB_Arbiter component
+    component AHB_Arbiter is
+        port (
+            -- AHB Lite Interface signals from each IP
+            HADDR1     : in  std_logic_vector(31 downto 0);
+            HWRITE1    : in  std_logic;
+            HWDATA1    : in  std_logic_vector(31 downto 0);
+            HRDATA1    : out std_logic_vector(31 downto 0);
+            HREADY1    : out std_logic;
+
+            HADDR2     : in  std_logic_vector(31 downto 0);
+            HWRITE2    : in  std_logic;
+            HWDATA2    : in  std_logic_vector(31 downto 0);
+            HRDATA2    : out std_logic_vector(31 downto 0);
+            HREADY2    : out std_logic;
+
+            HADDR3     : in  std_logic_vector(31 downto 0);
+            HWRITE3    : in  std_logic;
+            HWDATA3    : in  std_logic_vector(31 downto 0);
+            HRDATA3    : out std_logic_vector(31 downto 0);
+            HREADY3    : out std_logic;
+
+            HADDR4     : in  std_logic_vector(31 downto 0);
+            HWRITE4    : in  std_logic;
+            HWDATA4    : in  std_logic_vector(31 downto 0);
+            HRDATA4    : out std_logic_vector(31 downto 0);
+            HREADY4    : out std_logic;
+
+            HADDR5     : in  std_logic_vector(31 downto 0);
+            HWRITE5    : in  std_logic;
+            HWDATA5    : in  std_logic_vector(31 downto 0);
+            HRDATA5    : out std_logic_vector(31 downto 0);
+            HREADY5    : out std_logic;
+
+            HADDR6     : in  std_logic_vector(31 downto 0);
+            HWRITE6    : in  std_logic;
+            HWDATA6    : in  std_logic_vector(31 downto 0);
+            HRDATA6    : out std_logic_vector(31 downto 0);
+            HREADY6    : out std_logic;
+
+            -- CPU AHB Lite Interface
+            HADDR_CPU  : out std_logic_vector(31 downto 0);
+            HWRITE_CPU : out std_logic;
+            HWDATA_CPU : out std_logic_vector(31 downto 0);
+            HRDATA_CPU : in  std_logic_vector(31 downto 0);
+            HREADY_CPU : in  std_logic;
+
+            -- Clock and reset
+            HCLK       : in  std_logic;
+            HRESETn    : in  std_logic
+        );
+    end component;
+
     -- Internal AHB Lite Interface Signals for IP1 (I2C)
     signal HADDR1      : std_logic_vector(31 downto 0);
     signal HWRITE1     : std_logic;
@@ -190,18 +244,22 @@ begin
             RXD        => RXD6
         );
 
-    -- Instantiate the Arbiter component to handle AHB arbitration
-    ARBITER: AHB_Arbiter
-        port map (
-            -- Connect internal AHB interfaces of each IP to the arbiter
-            HADDR1    => HADDR1, HWRITE1 => HWRITE1, HWDATA1 => HWDATA1, HRDATA1 => HRDATA1, HREADY1 => HREADY1,
-            HADDR2    => HADDR2, HWRITE2 => HWRITE2, HWDATA2 => HWDATA2, HRDATA2 => HRDATA2, HREADY2 => HREADY2,
-            HADDR3    => HADDR3, HWRITE3 => HWRITE3, HWDATA3 => HWDATA3, HRDATA3 => HRDATA3, HREADY3 => HREADY3,
-            HADDR4    => HADDR4, HWRITE4 => HWRITE4, HWDATA4 => HWDATA4, HRDATA4 => HRDATA4, HREADY4 => HREADY4,
-            HADDR5    => HADDR5, HWRITE5 => HWRITE5, HWDATA5 => HWDATA5, HRDATA5 => HRDATA5, HREADY5 => HREADY5,
-            HADDR6    => HADDR6, HWRITE6 => HWRITE6, HWDATA6 => HWDATA6, HRDATA6 => HRDATA6, HREADY6 => HREADY6,
+-- Instantiate the Arbiter component to handle AHB arbitration
+ARBITER: AHB_Arbiter
+    port map (
+        -- Clock and reset (use a common clock and reset for the arbiter)
+        HCLK       => HCLK_CPU,       -- Use CPU clock or another clock as needed
+        HRESETn    => HRESETn_CPU,    -- Use CPU reset or another reset as needed
 
-            -- Connect the CPU AHB Lite interface
-            HADDR_CPU => HADDR_CPU, HWRITE_CPU => HWRITE_CPU, HWDATA_CPU => HWDATA_CPU, HRDATA_CPU => HRDATA_CPU, HREADY_CPU => HREADY_CPU
-        );
+        -- Connect internal AHB interfaces of each IP to the arbiter
+        HADDR1    => HADDR1, HWRITE1 => HWRITE1, HWDATA1 => HWDATA1, HRDATA1 => HRDATA1, HREADY1 => HREADY1,
+        HADDR2    => HADDR2, HWRITE2 => HWRITE2, HWDATA2 => HWDATA2, HRDATA2 => HRDATA2, HREADY2 => HREADY2,
+        HADDR3    => HADDR3, HWRITE3 => HWRITE3, HWDATA3 => HWDATA3, HRDATA3 => HRDATA3, HREADY3 => HREADY3,
+        HADDR4    => HADDR4, HWRITE4 => HWRITE4, HWDATA4 => HWDATA4, HRDATA4 => HRDATA4, HREADY4 => HREADY4,
+        HADDR5    => HADDR5, HWRITE5 => HWRITE5, HWDATA5 => HWDATA5, HRDATA5 => HRDATA5, HREADY5 => HREADY5,
+        HADDR6    => HADDR6, HWRITE6 => HWRITE6, HWDATA6 => HWDATA6, HRDATA6 => HRDATA6, HREADY6 => HREADY6,
+
+        -- Connect the CPU AHB Lite interface
+        HADDR_CPU => HADDR_CPU, HWRITE_CPU => HWRITE_CPU, HWDATA_CPU => HWDATA_CPU, HRDATA_CPU => HRDATA_CPU, HREADY_CPU => HREADY_CPU
+    );
 end Behavioral;

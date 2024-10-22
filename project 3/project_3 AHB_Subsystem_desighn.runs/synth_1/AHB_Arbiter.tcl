@@ -4,7 +4,7 @@
 
 set TIME_start [clock seconds] 
 namespace eval ::optrace {
-  variable script "C:/Users/User/OneDrive/Documents/college/modules/year 4/Sytem on chip/soc_group/project 3/project_3 AHB_Subsystem_desighn.runs/synth_1/SoC_Subsystem.tcl"
+  variable script "C:/Users/User/OneDrive/Documents/college/modules/year 4/Sytem on chip/soc_group/project 3/project_3 AHB_Subsystem_desighn.runs/synth_1/AHB_Arbiter.tcl"
   variable category "vivado_synth"
 }
 
@@ -57,7 +57,6 @@ if {$::dispatch::connected} {
 
 OPTRACE "synth_1" START { ROLLUP_AUTO }
 set_param checkpoint.writeSynthRtdsInDcp 1
-set_param synth.incrementalSynthesisCache C:/Users/User/AppData/Roaming/Xilinx/Vivado/.Xil/Vivado-2172-DESKTOP-SBD0BCP/incrSyn
 set_msg_config -id {Synth 8-256} -limit 10000
 set_msg_config -id {Synth 8-638} -limit 10000
 OPTRACE "Creating in-memory project" START { }
@@ -74,16 +73,7 @@ set_property ip_output_repo {c:/Users/User/OneDrive/Documents/college/modules/ye
 set_property ip_cache_permissions {read write} [current_project]
 OPTRACE "Creating in-memory project" END { }
 OPTRACE "Adding files" START { }
-read_vhdl -library xil_defaultlib {
-  {C:/Users/User/OneDrive/Documents/college/modules/year 4/Sytem on chip/soc_group/project 3/project_3 AHB_Subsystem_desighn.srcs/sources_1/new/IP1_I2C.vhd}
-  {C:/Users/User/OneDrive/Documents/college/modules/year 4/Sytem on chip/soc_group/project 3/project_3 AHB_Subsystem_desighn.srcs/sources_1/new/IP2_SPI.vhd}
-  {C:/Users/User/OneDrive/Documents/college/modules/year 4/Sytem on chip/soc_group/project 3/project_3 AHB_Subsystem_desighn.srcs/sources_1/new/IP3_CCP.vhd}
-  {C:/Users/User/OneDrive/Documents/college/modules/year 4/Sytem on chip/soc_group/project 3/project_3 AHB_Subsystem_desighn.srcs/sources_1/new/IP4_UART.vhd}
-  {C:/Users/User/OneDrive/Documents/college/modules/year 4/Sytem on chip/soc_group/project 3/project_3 AHB_Subsystem_desighn.srcs/sources_1/new/IP5_SSI.vhd}
-  {C:/Users/User/OneDrive/Documents/college/modules/year 4/Sytem on chip/soc_group/project 3/project_3 AHB_Subsystem_desighn.srcs/sources_1/new/IP6_SOSSI.vhd}
-  {C:/Users/User/OneDrive/Documents/college/modules/year 4/Sytem on chip/soc_group/project 3/project_3 AHB_Subsystem_desighn.srcs/sources_1/new/arbitor.vhd}
-  {C:/Users/User/OneDrive/Documents/college/modules/year 4/Sytem on chip/soc_group/project 3/project_3 AHB_Subsystem_desighn.srcs/sources_1/new/SoC-Subsytem.vhd}
-}
+read_vhdl -library xil_defaultlib {{C:/Users/User/OneDrive/Documents/college/modules/year 4/Sytem on chip/soc_group/project 3/project_3 AHB_Subsystem_desighn.srcs/sources_1/new/arbitor.vhd}}
 OPTRACE "Adding files" END { }
 # Mark all dcp files as not used in implementation to prevent them from being
 # stitched into the results of this synthesis run. Any black boxes in the
@@ -99,7 +89,7 @@ read_checkpoint -auto_incremental -incremental {C:/Users/User/OneDrive/Documents
 close [open __synthesis_is_running__ w]
 
 OPTRACE "synth_design" START { }
-synth_design -top SoC_Subsystem -part xc7k70tfbv676-1
+synth_design -top AHB_Arbiter -part xc7k70tfbv676-1
 OPTRACE "synth_design" END { }
 if { [get_msg_config -count -severity {CRITICAL WARNING}] > 0 } {
  send_msg_id runtcl-6 info "Synthesis results are not added to the cache due to CRITICAL_WARNING"
@@ -109,10 +99,10 @@ if { [get_msg_config -count -severity {CRITICAL WARNING}] > 0 } {
 OPTRACE "write_checkpoint" START { CHECKPOINT }
 # disable binary constraint mode for synth run checkpoints
 set_param constraints.enableBinaryConstraints false
-write_checkpoint -force -noxdef SoC_Subsystem.dcp
+write_checkpoint -force -noxdef AHB_Arbiter.dcp
 OPTRACE "write_checkpoint" END { }
 OPTRACE "synth reports" START { REPORT }
-generate_parallel_reports -reports { "report_utilization -file SoC_Subsystem_utilization_synth.rpt -pb SoC_Subsystem_utilization_synth.pb"  } 
+generate_parallel_reports -reports { "report_utilization -file AHB_Arbiter_utilization_synth.rpt -pb AHB_Arbiter_utilization_synth.pb"  } 
 OPTRACE "synth reports" END { }
 file delete __synthesis_is_running__
 close [open __synthesis_is_complete__ w]
