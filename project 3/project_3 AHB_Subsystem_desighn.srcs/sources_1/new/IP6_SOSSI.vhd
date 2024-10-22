@@ -18,8 +18,12 @@ entity IP_SOSSI is
         HMASTLOCK  : std_logic;
         
         
-        TXD        : out std_logic;    -- Transmit Data
-        RXD        : in std_logic      -- Receive Data
+        SCLK        : out std_logic;    -- Clock
+        SDOUT       : out std_logic; -- Serial Data Out
+        SDIN        : in std_logic;  -- Serial Data In
+        TX_EN       : in std_logic;  -- Enable Transmission
+        RX_EN       : in std_logic;  -- Enable Reception
+        READY       : in std_logic   -- Indicates Readiness for data
     );
 end IP_SOSSI;
 

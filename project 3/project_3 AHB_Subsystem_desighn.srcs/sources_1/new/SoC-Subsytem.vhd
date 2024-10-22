@@ -32,23 +32,31 @@ entity SoC_Subsystem is
         SS2         : out std_logic;     -- Slave Select (output)
 
         -- CCP specific pins
-        Data        : in  std_logic_vector(7 downto 0);
-        PIXCLK      : in std_logic;
-        HSYNC       : in std_logic;
-        VSYNC       : in std_logic;
-        MCLK        : out std_logic;
+        Data        : in  std_logic_vector(7 downto 0); -- 8 Bit Data Bus (input)
+        PIXCLK      : in std_logic; -- Pixel Clock
+        HSYNC       : in std_logic; -- Horizontal Sync
+        VSYNC       : in std_logic; -- Vertical Sync
+        CCP_CLK        : out std_logic; --CCP Clock (output)
 
         -- UART specific signals
         TXD4        : out std_logic;      -- Transmit Data (output)
         RXD4        : in std_logic;       -- Receive Data (input)
+        IRQ         : out std_logic;       -- Interrupt Request (output)
 
         -- SSI specific signals
+        SSI_CLK     : out std_logic;      -- SSI Clock
+        FSS         : out std_logic;      -- Frame Sync Select
         TXD5        : out std_logic;      -- Transmit Data (output)
         RXD5        : in std_logic;       -- Receive Data (input)
 
         -- SOSSI specific signals
-        TXD6        : out std_logic;      -- Transmit Data (output)
-        RXD6        : in std_logic        -- Receive Data (input)
+        SCLK        : out std_logic;      -- SSOSSI Clock (output)
+        SDOUT       : out std_logic;      -- Serial Data Out (output)
+        SDIN        : in std_logic;       -- Serial Data In (input)
+        TX_EN       : in std_logic;       -- Enable Transmission (input)
+        RX_EN       : in std_logic;       -- Enable Reception (input)
+        READY       : in std_logic        -- Ready for data (input)
+        
     );
 end SoC_Subsystem;
 
@@ -321,7 +329,7 @@ begin
             PIXCLK     => PIXCLK,
             HSYNC      => HSYNC,
             VSYNC      => VSYNC,
-            MCLK       => MCLK
+            CCP_CLK    => CCP_CLK
         );
 
     -- Instantiate IP4 (UART)
@@ -341,7 +349,8 @@ begin
             HPROT      => HPROT4,
             HMASTLOCK  => HMASTLOCK4,
             TXD        => TXD4,
-            RXD        => RXD4
+            RXD        => RXD4,
+            IRQ        => IRQ
         );
 
     -- Instantiate IP5 (SSI)
@@ -360,6 +369,8 @@ begin
             HTRANS     => HTRANS5,
             HPROT      => HPROT5,
             HMASTLOCK  => HMASTLOCK5,
+            SSI_CLK    => SSI_CLK,
+            FSS        => FSS,
             TXD        => TXD5,
             RXD        => RXD5
         );
@@ -380,8 +391,12 @@ begin
             HTRANS     => HTRANS6,
             HPROT      => HPROT6,
             HMASTLOCK  => HMASTLOCK6,
-            TXD        => TXD6,
-            RXD        => RXD6
+            SCLK       => SCLK,
+            SDOUT      => SDOUT,
+            SDIN       => SDIN,
+            TX_EN      => TX_EN,
+            RX_EN      => RX_EN,
+            READY      => READY
         );
 
 -- Instantiate the Arbiter component to handle AHB arbitration
