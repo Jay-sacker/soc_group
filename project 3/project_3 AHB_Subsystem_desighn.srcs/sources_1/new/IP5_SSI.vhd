@@ -17,7 +17,8 @@ entity IP_SSI is
         HPROT      : std_logic_vector(3 downto 0); 
         HMASTLOCK  : std_logic;
         
-        
+        SSI_CLK    : out std_logic;    -- SSI Clock
+        FSS        : out std_logic;    -- Frame Sync Select
         TXD        : out std_logic;    -- Transmit Data
         RXD        : in std_logic      -- Receive Data
     );

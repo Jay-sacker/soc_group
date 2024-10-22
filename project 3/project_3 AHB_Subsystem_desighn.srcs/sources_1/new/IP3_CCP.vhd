@@ -24,7 +24,7 @@ entity IP_CCP is
         PIXCLK     : in std_logic;      -- Pixel clock
         HSYNC      : in std_logic;      -- Horizontal sync
         VSYNC      : in std_logic;      -- Vertical sync
-        MCLK       : out std_logic     -- Master clock
+        CCP_CLK       : out std_logic     -- CCP clock
         
     );
 end IP_CCP;

@@ -19,7 +19,8 @@ entity IP_UART is
         
         
         TXD        : out std_logic;    -- Transmit Data
-        RXD        : in std_logic      -- Receive Data
+        RXD        : in std_logic;      -- Receive Data
+        IRQ        : out std_logic      -- Interrupt Request 
     );
 end IP_UART;
 
