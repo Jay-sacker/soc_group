@@ -13,12 +13,12 @@ entity IP_CCP is
         HREADY     : out std_logic;
 
         -- CCP Specific Pins
-        D0         : inout std_logic;   -- Data line 0
+        Data        : in  std_logic_vector(7 downto 0);
         PIXCLK     : in std_logic;      -- Pixel clock
         HSYNC      : in std_logic;      -- Horizontal sync
         VSYNC      : in std_logic;      -- Vertical sync
-        MCLK       : out std_logic;     -- Master clock
-        PWDN       : out std_logic      -- Power down
+        MCLK       : out std_logic     -- Master clock
+        
     );
 end IP_CCP;
 

@@ -5,90 +5,6 @@ use IEEE.STD_LOGIC_UNSIGNED.ALL;
 
 entity SoC_Subsystem is
     port (
-        -- AHB Lite Interface for IP1 (I2C)
-        HCLK1       : in  std_logic;    -- Clock for IP1
-        HRESETn1    : in  std_logic;    -- Reset for IP1 (active low)
-        HADDR1      : in  std_logic_vector(31 downto 0);  -- Address bus for IP1
-        HWRITE1     : in  std_logic;    -- Write control for IP1
-        HWDATA1     : in  std_logic_vector(31 downto 0);  -- Write data for IP1
-        HRDATA1     : out std_logic_vector(31 downto 0);  -- Read data for IP1
-        HREADY1     : out std_logic;    -- Ready signal for IP1
-        
-        -- SDA and SCL for I2C
-        SDA1        : inout std_logic;   -- Serial Data Line (bidirectional)
-        SCL1        : in std_logic;      -- Serial Clock Line (input)
-
-        -- AHB Lite Interface for IP2 (SPI)
-        HCLK2       : in  std_logic;
-        HRESETn2    : in  std_logic;
-        HADDR2      : in  std_logic_vector(31 downto 0);
-        HWRITE2     : in  std_logic;
-        HWDATA2     : in  std_logic_vector(31 downto 0);
-        HRDATA2     : out std_logic_vector(31 downto 0);
-        HREADY2     : out std_logic;
-        
-        -- SPI specific signals
-        MOSI2       : inout std_logic;   -- Master Out Slave In (bidirectional)
-        MISO2       : inout std_logic;   -- Master In Slave Out (bidirectional)
-        SCK2        : in std_logic;      -- Serial Clock (input)
-        SS2         : out std_logic;     -- Slave Select (output)
-
-        -- AHB Lite Interface for IP3 (CCP)
-        HCLK3       : in  std_logic;
-        HRESETn3    : in  std_logic;
-        HADDR3      : in  std_logic_vector(31 downto 0);
-        HWRITE3     : in  std_logic;
-        HWDATA3     : in  std_logic_vector(31 downto 0);
-        HRDATA3     : out std_logic_vector(31 downto 0);
-        HREADY3     : out std_logic;
-        
-                -- CCP specific pins
-        D0          : inout std_logic;
-        PIXCLK      : in std_logic;
-        HSYNC       : in std_logic;
-        VSYNC       : in std_logic;
-        MCLK        : out std_logic;
-        PWDN        : out std_logic;
-
-        -- AHB Lite Interface for IP4 (UART)
-        HCLK4       : in  std_logic;
-        HRESETn4    : in  std_logic;
-        HADDR4      : in  std_logic_vector(31 downto 0);
-        HWRITE4     : in  std_logic;
-        HWDATA4     : in  std_logic_vector(31 downto 0);
-        HRDATA4     : out std_logic_vector(31 downto 0);
-        HREADY4     : out std_logic;
-
-        -- UART specific signals
-        TXD4        : out std_logic;      -- Transmit Data (output)
-        RXD4        : in std_logic;       -- Receive Data (input)
-
-        -- AHB Lite Interface for IP5 (SSI)
-        HCLK5       : in  std_logic;
-        HRESETn5    : in  std_logic;
-        HADDR5      : in  std_logic_vector(31 downto 0);
-        HWRITE5     : in  std_logic;
-        HWDATA5     : in  std_logic_vector(31 downto 0);
-        HRDATA5     : out std_logic_vector(31 downto 0);
-        HREADY5     : out std_logic;
-
-        -- SSI specific signals
-        TXD5        : out std_logic;      -- Transmit Data (output)
-        RXD5        : in std_logic;       -- Receive Data (input)
-
-        -- AHB Lite Interface for IP6 (SOSSI)
-        HCLK6       : in  std_logic;
-        HRESETn6    : in  std_logic;
-        HADDR6      : in  std_logic_vector(31 downto 0);
-        HWRITE6     : in  std_logic;
-        HWDATA6     : in  std_logic_vector(31 downto 0);
-        HRDATA6     : out std_logic_vector(31 downto 0);
-        HREADY6     : out std_logic;
-
-        -- SOSSI specific signals
-        TXD6        : out std_logic;      -- Transmit Data (output)
-        RXD6        : in std_logic;       -- Receive Data (input)
-
         -- External CPU AHB Lite Interface
         HCLK_CPU    : in  std_logic;
         HRESETn_CPU : in  std_logic;
@@ -96,63 +12,96 @@ entity SoC_Subsystem is
         HWRITE_CPU  : out std_logic;
         HWDATA_CPU  : out std_logic_vector(31 downto 0);
         HRDATA_CPU  : in  std_logic_vector(31 downto 0);
-        HREADY_CPU  : in  std_logic
+        HREADY_CPU  : in  std_logic;
+
+        -- SDA and SCL for I2C
+        SDA1        : inout std_logic;   -- Serial Data Line (bidirectional)
+        SCL1        : in std_logic;      -- Serial Clock Line (input)
+
+        -- SPI specific signals
+        MOSI2       : inout std_logic;   -- Master Out Slave In (bidirectional)
+        MISO2       : inout std_logic;   -- Master In Slave Out (bidirectional)
+        SCK2        : in std_logic;      -- Serial Clock (input)
+        SS2         : out std_logic;     -- Slave Select (output)
+
+        -- CCP specific pins
+        Data        : in  std_logic_vector(7 downto 0);
+        PIXCLK      : in std_logic;
+        HSYNC       : in std_logic;
+        VSYNC       : in std_logic;
+        MCLK        : out std_logic;
+
+        -- UART specific signals
+        TXD4        : out std_logic;      -- Transmit Data (output)
+        RXD4        : in std_logic;       -- Receive Data (input)
+
+        -- SSI specific signals
+        TXD5        : out std_logic;      -- Transmit Data (output)
+        RXD5        : in std_logic;       -- Receive Data (input)
+
+        -- SOSSI specific signals
+        TXD6        : out std_logic;      -- Transmit Data (output)
+        RXD6        : in std_logic        -- Receive Data (input)
     );
 end SoC_Subsystem;
 
 architecture Behavioral of SoC_Subsystem is
+    -- Internal AHB Lite Interface Signals for IP1 (I2C)
+    signal HADDR1      : std_logic_vector(31 downto 0);
+    signal HWRITE1     : std_logic;
+    signal HWDATA1     : std_logic_vector(31 downto 0);
+    signal HRDATA1     : std_logic_vector(31 downto 0);
+    signal HREADY1     : std_logic;
+    signal HCLK1       : std_logic;
+    signal HRESETn1    : std_logic;
 
-    -- Instantiate the Arbitration Module for round-robin arbitration
-    component AHB_Arbiter
-        port (
-            -- IP to Arbiter connections
-            HADDR1    : in  std_logic_vector(31 downto 0);
-            HWRITE1   : in  std_logic;
-            HWDATA1   : in  std_logic_vector(31 downto 0);
-            HRDATA1   : out std_logic_vector(31 downto 0);
-            HREADY1   : out std_logic;
+    -- Internal AHB Lite Interface Signals for IP2 (SPI)
+    signal HADDR2      : std_logic_vector(31 downto 0);
+    signal HWRITE2     : std_logic;
+    signal HWDATA2     : std_logic_vector(31 downto 0);
+    signal HRDATA2     : std_logic_vector(31 downto 0);
+    signal HREADY2     : std_logic;
+    signal HCLK2       : std_logic;
+    signal HRESETn2    : std_logic;
 
-            HADDR2    : in  std_logic_vector(31 downto 0);
-            HWRITE2   : in  std_logic;
-            HWDATA2   : in  std_logic_vector(31 downto 0);
-            HRDATA2   : out std_logic_vector(31 downto 0);
-            HREADY2   : out std_logic;
+    -- Internal AHB Lite Interface Signals for IP3 (CCP)
+    signal HADDR3      : std_logic_vector(31 downto 0);
+    signal HWRITE3     : std_logic;
+    signal HWDATA3     : std_logic_vector(31 downto 0);
+    signal HRDATA3     : std_logic_vector(31 downto 0);
+    signal HREADY3     : std_logic;
+    signal HCLK3       : std_logic;
+    signal HRESETn3    : std_logic;
 
-            HADDR3    : in  std_logic_vector(31 downto 0);
-            HWRITE3   : in  std_logic;
-            HWDATA3   : in  std_logic_vector(31 downto 0);
-            HRDATA3   : out std_logic_vector(31 downto 0);
-            HREADY3   : out std_logic;
+    -- Internal AHB Lite Interface Signals for IP4 (UART)
+    signal HADDR4      : std_logic_vector(31 downto 0);
+    signal HWRITE4     : std_logic;
+    signal HWDATA4     : std_logic_vector(31 downto 0);
+    signal HRDATA4     : std_logic_vector(31 downto 0);
+    signal HREADY4     : std_logic;
+    signal HCLK4       : std_logic;
+    signal HRESETn4    : std_logic;
 
-            HADDR4    : in  std_logic_vector(31 downto 0);
-            HWRITE4   : in  std_logic;
-            HWDATA4   : in  std_logic_vector(31 downto 0);
-            HRDATA4   : out std_logic_vector(31 downto 0);
-            HREADY4   : out std_logic;
+    -- Internal AHB Lite Interface Signals for IP5 (SSI)
+    signal HADDR5      : std_logic_vector(31 downto 0);
+    signal HWRITE5     : std_logic;
+    signal HWDATA5     : std_logic_vector(31 downto 0);
+    signal HRDATA5     : std_logic_vector(31 downto 0);
+    signal HREADY5     : std_logic;
+    signal HCLK5       : std_logic;
+    signal HRESETn5    : std_logic;
 
-            HADDR5    : in  std_logic_vector(31 downto 0);
-            HWRITE5   : in  std_logic;
-            HWDATA5   : in  std_logic_vector(31 downto 0);
-            HRDATA5   : out std_logic_vector(31 downto 0);
-            HREADY5   : out std_logic;
-
-            HADDR6    : in  std_logic_vector(31 downto 0);
-            HWRITE6   : in  std_logic;
-            HWDATA6   : in  std_logic_vector(31 downto 0);
-            HRDATA6   : out std_logic_vector(31 downto 0);
-            HREADY6   : out std_logic;
-
-            -- CPU AHB Interface
-            HADDR_CPU : out std_logic_vector(31 downto 0);
-            HWRITE_CPU : out std_logic;
-            HWDATA_CPU : out std_logic_vector(31 downto 0);
-            HRDATA_CPU : in  std_logic_vector(31 downto 0);
-            HREADY_CPU : in  std_logic
-        );
-    end component;
+    -- Internal AHB Lite Interface Signals for IP6 (SOSSI)
+    signal HADDR6      : std_logic_vector(31 downto 0);
+    signal HWRITE6     : std_logic;
+    signal HWDATA6     : std_logic_vector(31 downto 0);
+    signal HRDATA6     : std_logic_vector(31 downto 0);
+    signal HREADY6     : std_logic;
+    signal HCLK6       : std_logic;
+    signal HRESETn6    : std_logic;
 
 begin
- -- Instantiate IP1 (I2C)
+    -- Instantiate IP1 (I2C)
     IP1_I2C: entity work.IP_I2C
         port map (
             HCLK       => HCLK1,
@@ -192,12 +141,11 @@ begin
             HWDATA     => HWDATA3,
             HRDATA     => HRDATA3,
             HREADY     => HREADY3,
-            D0         => D0,
+            Data       => Data,
             PIXCLK     => PIXCLK,
             HSYNC      => HSYNC,
             VSYNC      => VSYNC,
-            MCLK       => MCLK,
-            PWDN       => PWDN
+            MCLK       => MCLK
         );
 
     -- Instantiate IP4 (UART)
@@ -241,10 +189,11 @@ begin
             TXD        => TXD6,
             RXD        => RXD6
         );
+
     -- Instantiate the Arbiter component to handle AHB arbitration
     ARBITER: AHB_Arbiter
         port map (
-            -- Connect AHB interfaces of each IP to the arbiter
+            -- Connect internal AHB interfaces of each IP to the arbiter
             HADDR1    => HADDR1, HWRITE1 => HWRITE1, HWDATA1 => HWDATA1, HRDATA1 => HRDATA1, HREADY1 => HREADY1,
             HADDR2    => HADDR2, HWRITE2 => HWRITE2, HWDATA2 => HWDATA2, HRDATA2 => HRDATA2, HREADY2 => HREADY2,
             HADDR3    => HADDR3, HWRITE3 => HWRITE3, HWDATA3 => HWDATA3, HRDATA3 => HRDATA3, HREADY3 => HREADY3,
