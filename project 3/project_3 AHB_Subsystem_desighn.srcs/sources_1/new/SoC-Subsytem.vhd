@@ -6,20 +6,19 @@ use IEEE.STD_LOGIC_UNSIGNED.ALL;
 entity SoC_Subsystem is
     port (
         -- External CPU AHB Lite Interface
-        HCLK_CPU    : in  std_logic;
-        HRESETn_CPU : in  std_logic;
-        HADDR_CPU   : out std_logic_vector(31 downto 0);
-        HWRITE_CPU  : out std_logic;
-        HWDATA_CPU  : out std_logic_vector(31 downto 0);
-        HRDATA_CPU  : in  std_logic_vector(31 downto 0);
-        HREADYOUT_CPU : in  std_logic;
-        HREAdy_CPU  : in std_logic;
-        HRESP_CPU   : in  std_logic;
-        HSIZE_CPU   : out std_logic_vector(2 downto 0);      -- 3-bit transfer size
-        HBURST_CPU  : out std_logic_vector(2 downto 0);      -- 3-bit burst type
-        HTRANS_CPU  : out std_logic_vector(1 downto 0);      -- 2-bit transfer type (IDLE, BUSY, NONSEQ, SEQ)
-        HPROT_CPU   : out std_logic_vector(3 downto 0);      -- 4-bit protection control signal
-        HMASTLOCK_CPU : out std_logic;                       -- Master lock signal (1 = locked, 0 = unlocked)
+            HCLK_CPU    : in  std_logic;
+            HRESETn_CPU : in  std_logic;
+            HADDR_CPU     : in  std_logic_vector(31 downto 0);     -- 32-bit address bus
+            HWRITE_CPU    : in  std_logic;                         -- Write signal (1 = write, 0 = read)
+            HWDATA_CPU    : in  std_logic_vector(31 downto 0);     -- 32-bit data for write
+            HRDATA_CPU    : out std_logic_vector(31 downto 0);     -- 32-bit data for read
+            HREADY_CPU    : out std_logic;                         -- Indicates slave ready for transfer
+            HRESP_CPU     : out std_logic;                         -- Transfer response (OKAY or ERROR)
+            HSIZE_CPU     : in  std_logic_vector(2 downto 0);      -- 3-bit transfer size
+            HBURST_CPU    : in  std_logic_vector(2 downto 0);      -- 3-bit burst type
+            HTRANS_CPU    : in  std_logic_vector(1 downto 0);      -- 2-bit transfer type (IDLE, BUSY, NONSEQ, SEQ)
+            HPROT_CPU     : in  std_logic_vector(3 downto 0);      -- 4-bit protection control signal
+            HMASTLOCK_CPU : in  std_logic;                        -- Master lock signal (1 = locked, 0 = unlocked)
 
         -- SDA and SCL for I2C
         SDA1        : inout std_logic;   -- Serial Data Line (bidirectional)
@@ -68,111 +67,109 @@ architecture Behavioral of SoC_Subsystem is
             -- AHB Lite Interface signals from each IP
         -- AHB Lite Master Interface (CPU)
 
-        HADDR_CPU     : out std_logic_vector(31 downto 0);     -- 32-bit address bus
-        HWRITE_CPU    : out std_logic;                         -- Write signal (1 = write, 0 = read)
-        HWDATA_CPU    : out std_logic_vector(31 downto 0);     -- 32-bit data for write
-        HRDATA_CPU    : in  std_logic_vector(31 downto 0);     -- 32-bit data for read
-        HREADY_CPU    : in  std_logic;                         -- Indicates slave ready for transfer
-        HRESP_CPU     : in  std_logic;                         -- Transfer response (OKAY or ERROR)
-        HSIZE_CPU     : out std_logic_vector(2 downto 0);      -- 3-bit transfer size
-        HBURST_CPU    : out std_logic_vector(2 downto 0);      -- 3-bit burst type
-        HTRANS_CPU    : out std_logic_vector(1 downto 0);      -- 2-bit transfer type (IDLE, BUSY, NONSEQ, SEQ)
-        HPROT_CPU     : out std_logic_vector(3 downto 0);      -- 4-bit protection control signal
-        HMASTLOCK_CPU : out std_logic;                         -- Master lock signal (1 = locked, 0 = unlocked)
-
-        -- (I2C) 
-        HSEL_S1       : in  std_logic;                         -- Slave select signal
-        HADDR_S1      : in  std_logic_vector(31 downto 0);     -- Address bus from slave
-        HWRITE_S1     : in  std_logic;                         -- Write signal from slave (1 = write, 0 = read)
-        HSIZE_S1      : in  std_logic_vector(2 downto 0);      -- Transfer size from slave
-        HBURST_S1     : in  std_logic_vector(2 downto 0);      -- Burst type from slave
-        HPROT_S1      : in  std_logic_vector(3 downto 0);      -- 4-bit protection control signal
-        HTRANS_S1     : in  std_logic_vector(1 downto 0);      -- Transfer type from slave
-        HMASTLOCK_S1  : in  std_logic;                         -- Master lock signal from slave
-        HREADYOUT_S1  : out std_logic;                         -- Slave ready signal to master
-        HRESP_S1      : out std_logic;                         -- Transfer response from slave
-        HRDATA_S1     : out std_logic_vector(31 downto 0);     -- Data bus for read operations to slave
-        HWDATA_S1     : in  std_logic_vector(31 downto 0);     -- Data bus for write operations from slave
-        HREADY_S1     : in  std_logic;                         -- Ready signal from master to slave
-
-        -- (SPI) 
-        HSEL_S2       : in  std_logic;
-        HADDR_S2      : in  std_logic_vector(31 downto 0);
-        HWRITE_S2     : in  std_logic;
-        HSIZE_S2      : in  std_logic_vector(2 downto 0);
-        HBURST_S2     : in  std_logic_vector(2 downto 0);
-        HPROT_S2      : in  std_logic_vector(3 downto 0);
-        HTRANS_S2     : in  std_logic_vector(1 downto 0);
-        HMASTLOCK_S2  : in  std_logic;
-        HREADYOUT_S2  : out std_logic;
-        HRESP_S2      : out std_logic;
-        HRDATA_S2     : out std_logic_vector(31 downto 0);
-        HWDATA_S2     : in  std_logic_vector(31 downto 0);
-        HREADY_S2     : in  std_logic;
-
-        -- (CCP)
-        HSEL_S3       : in  std_logic;
-        HADDR_S3      : in  std_logic_vector(31 downto 0);
-        HWRITE_S3     : in  std_logic;
-        HSIZE_S3      : in  std_logic_vector(2 downto 0);
-        HBURST_S3     : in  std_logic_vector(2 downto 0);
-        HPROT_S3      : in  std_logic_vector(3 downto 0);
-        HTRANS_S3     : in  std_logic_vector(1 downto 0);
-        HMASTLOCK_S3  : in  std_logic;
-        HREADYOUT_S3  : out std_logic;
-        HRESP_S3      : out std_logic;
-        HRDATA_S3     : out std_logic_vector(31 downto 0);
-        HWDATA_S3     : in  std_logic_vector(31 downto 0);
-        HREADY_S3     : in  std_logic;
-
-        -- (UART) 
-        HSEL_S4       : in  std_logic;
-        HADDR_S4      : in  std_logic_vector(31 downto 0);
-        HWRITE_S4     : in  std_logic;
-        HSIZE_S4      : in  std_logic_vector(2 downto 0);
-        HBURST_S4     : in  std_logic_vector(2 downto 0);
-        HPROT_S4      : in  std_logic_vector(3 downto 0);
-        HTRANS_S4     : in  std_logic_vector(1 downto 0);
-        HMASTLOCK_S4  : in  std_logic;
-        HREADYOUT_S4  : out std_logic;
-        HRESP_S4      : out std_logic;
-        HRDATA_S4     : out std_logic_vector(31 downto 0);
-        HWDATA_S4     : in  std_logic_vector(31 downto 0);
-        HREADY_S4     : in  std_logic;
-
-        --(SSI) 
-        HSEL_S5       : in  std_logic;
-        HADDR_S5      : in  std_logic_vector(31 downto 0);
-        HWRITE_S5     : in  std_logic;
-        HSIZE_S5      : in  std_logic_vector(2 downto 0);
-        HBURST_S5     : in  std_logic_vector(2 downto 0);
-        HPROT_S5      : in  std_logic_vector(3 downto 0);
-        HTRANS_S5     : in  std_logic_vector(1 downto 0);
-        HMASTLOCK_S5  : in  std_logic;
-        HREADYOUT_S5  : out std_logic;
-        HRESP_S5      : out std_logic;
-        HRDATA_S5     : out std_logic_vector(31 downto 0);
-        HWDATA_S5     : in  std_logic_vector(31 downto 0);
-        HREADY_S5     : in  std_logic;
-
-        -- (SOSSI) 
-        HSEL_S6       : in  std_logic;
-        HADDR_S6      : in  std_logic_vector(31 downto 0);
-        HWRITE_S6     : in  std_logic;
-        HSIZE_S6      : in  std_logic_vector(2 downto 0);
-        HBURST_S6     : in  std_logic_vector(2 downto 0);
-        HPROT_S6      : in  std_logic_vector(3 downto 0);
-        HTRANS_S6     : in  std_logic_vector(1 downto 0);
-        HMASTLOCK_S6  : in  std_logic;
-        HREADYOUT_S6  : out std_logic;
-        HRESP_S6      : out std_logic;
-        HRDATA_S6     : out std_logic_vector(31 downto 0);
-        HWDATA_S6     : in  std_logic_vector(31 downto 0);
-        HREADY_S6     : in  std_logic;
-
-            -- Clock and reset
-        HCLK       : in  std_logic;
-        HRESETn    : in  std_logic
+            HCLK          : in  std_logic;                         -- AHB clock signal
+            HRESETn       : in  std_logic;                         -- AHB reset (active low)
+            HADDR_CPU     : in  std_logic_vector(31 downto 0);     -- 32-bit address bus
+            HWRITE_CPU    : in  std_logic;                         -- Write signal (1 = write, 0 = read)
+            HWDATA_CPU    : in  std_logic_vector(31 downto 0);     -- 32-bit data for write
+            HRDATA_CPU    : out std_logic_vector(31 downto 0);     -- 32-bit data for read
+            HREADY_CPU    : out std_logic;                         -- Indicates slave ready for transfer
+            HRESP_CPU     : out std_logic;                         -- Transfer response (OKAY or ERROR)
+            HSIZE_CPU     : in  std_logic_vector(2 downto 0);      -- 3-bit transfer size
+            HBURST_CPU    : in  std_logic_vector(2 downto 0);      -- 3-bit burst type
+            HTRANS_CPU    : in  std_logic_vector(1 downto 0);      -- 2-bit transfer type (IDLE, BUSY, NONSEQ, SEQ)
+            HPROT_CPU     : in  std_logic_vector(3 downto 0);      -- 4-bit protection control signal
+            HMASTLOCK_CPU : in  std_logic;                         -- Master lock signal (1 = locked, 0 = unlocked)
+            
+            -- (I2C) 
+            HSEL_S1       : in  std_logic;                         -- Slave select signal
+            HADDR_S1      : out  std_logic_vector(31 downto 0);     -- Address bus from slave
+            HWRITE_S1     : out  std_logic;                         -- Write signal from slave (1 = write, 0 = read)
+            HSIZE_S1      : out  std_logic_vector(2 downto 0);      -- Transfer size from slave
+            HBURST_S1     : out  std_logic_vector(2 downto 0);      -- Burst type from slave
+            HPROT_S1      : out  std_logic_vector(3 downto 0);      -- 4-bit protection control signal
+            HTRANS_S1     : out  std_logic_vector(1 downto 0);      -- Transfer type from slave
+            HMASTLOCK_S1  : out  std_logic;                         -- Master lock signal from slave
+            HREADYOUT_S1  : in  std_logic;                          -- Slave ready signal to master
+            HRESP_S1      : in  std_logic;                          -- Transfer response from slave
+            HRDATA_S1     : in  std_logic_vector(31 downto 0);      -- Data bus for read operations to slave
+            HWDATA_S1     : out  std_logic_vector(31 downto 0);     -- Data bus for write operations from slave
+            HREADY_S1     : out  std_logic;                         -- Ready signal from master to slave
+            
+            -- (SPI) 
+            HSEL_S2       : in  std_logic;
+            HADDR_S2      : out  std_logic_vector(31 downto 0);
+            HWRITE_S2     : out  std_logic;
+            HSIZE_S2      : out  std_logic_vector(2 downto 0);
+            HBURST_S2     : out  std_logic_vector(2 downto 0);
+            HPROT_S2      : out  std_logic_vector(3 downto 0);
+            HTRANS_S2     : out  std_logic_vector(1 downto 0);
+            HMASTLOCK_S2  : out  std_logic;
+            HREADYOUT_S2  : in  std_logic;
+            HRESP_S2      : in  std_logic;
+            HRDATA_S2     : in  std_logic_vector(31 downto 0);
+            HWDATA_S2     : out  std_logic_vector(31 downto 0);
+            HREADY_S2     : out  std_logic;
+            
+            -- (CCP)
+            HSEL_S3       : in  std_logic;
+            HADDR_S3      : out  std_logic_vector(31 downto 0);
+            HWRITE_S3     : out  std_logic;
+            HSIZE_S3      : out  std_logic_vector(2 downto 0);
+            HBURST_S3     : out  std_logic_vector(2 downto 0);
+            HPROT_S3      : out  std_logic_vector(3 downto 0);
+            HTRANS_S3     : out  std_logic_vector(1 downto 0);
+            HMASTLOCK_S3  : out  std_logic;
+            HREADYOUT_S3  : in  std_logic;
+            HRESP_S3      : in  std_logic;
+            HRDATA_S3     : in  std_logic_vector(31 downto 0);
+            HWDATA_S3     : out  std_logic_vector(31 downto 0);
+            HREADY_S3     : out  std_logic;
+            
+            -- (UART) 
+            HSEL_S4       : in  std_logic;
+            HADDR_S4      : out  std_logic_vector(31 downto 0);
+            HWRITE_S4     : out  std_logic;
+            HSIZE_S4      : out  std_logic_vector(2 downto 0);
+            HBURST_S4     : out  std_logic_vector(2 downto 0);
+            HPROT_S4      : out  std_logic_vector(3 downto 0);
+            HTRANS_S4     : out  std_logic_vector(1 downto 0);
+            HMASTLOCK_S4  : out  std_logic;
+            HREADYOUT_S4  : in  std_logic;
+            HRESP_S4      : in  std_logic;
+            HRDATA_S4     : in  std_logic_vector(31 downto 0);
+            HWDATA_S4     : out  std_logic_vector(31 downto 0);
+            HREADY_S4     : out  std_logic;
+            
+            --(SSI) 
+            HSEL_S5       : in  std_logic;
+            HADDR_S5      : out  std_logic_vector(31 downto 0);
+            HWRITE_S5     : out  std_logic;
+            HSIZE_S5      : out  std_logic_vector(2 downto 0);
+            HBURST_S5     : out  std_logic_vector(2 downto 0);
+            HPROT_S5      : out  std_logic_vector(3 downto 0);
+            HTRANS_S5     : out  std_logic_vector(1 downto 0);
+            HMASTLOCK_S5  : out  std_logic;
+            HREADYOUT_S5  : in  std_logic;
+            HRESP_S5      : in  std_logic;
+            HRDATA_S5     : in  std_logic_vector(31 downto 0);
+            HWDATA_S5     : out  std_logic_vector(31 downto 0);
+            HREADY_S5     : out  std_logic;
+            
+            -- (SOSSI) 
+            HSEL_S6       : in  std_logic;
+            HADDR_S6      : out  std_logic_vector(31 downto 0);
+            HWRITE_S6     : out  std_logic;
+            HSIZE_S6      : out  std_logic_vector(2 downto 0);
+            HBURST_S6     : out  std_logic_vector(2 downto 0);
+            HPROT_S6      : out  std_logic_vector(3 downto 0);
+            HTRANS_S6     : out  std_logic_vector(1 downto 0);
+            HMASTLOCK_S6  : out  std_logic;
+            HREADYOUT_S6  : in  std_logic;
+            HRESP_S6      : in  std_logic;
+            HRDATA_S6     : in  std_logic_vector(31 downto 0);
+            HWDATA_S6     : out  std_logic_vector(31 downto 0);
+            HREADY_S6     : out  std_logic
         );
     end component;
 
@@ -204,7 +201,7 @@ architecture Behavioral of SoC_Subsystem is
     signal HTRANS2     : std_logic_vector(1 downto 0);
     signal HPROT2      : std_logic_vector(3 downto 0);
     signal HMASTLOCK2  : std_logic;
-    signal HREADY2  : std_logic;
+    signal HREADY2     : std_logic;
 
     -- Internal AHB Lite Interface Signals for IP3 (CCP)
     signal HSEL_S3     : std_logic;  -- Slave select signal for Slave 1 (I2C)
@@ -234,7 +231,7 @@ architecture Behavioral of SoC_Subsystem is
     signal HTRANS4     : std_logic_vector(1 downto 0);
     signal HPROT4      : std_logic_vector(3 downto 0);
     signal HMASTLOCK4  : std_logic;
-    signal HREADY4  : std_logic;
+    signal HREADY4     : std_logic;
 
     -- Internal AHB Lite Interface Signals for IP5 (SSI)
     signal HSEL_S5     : std_logic;  -- Slave select signal for Slave 1 (I2C)
@@ -249,7 +246,7 @@ architecture Behavioral of SoC_Subsystem is
     signal HTRANS5     : std_logic_vector(1 downto 0);
     signal HPROT5      : std_logic_vector(3 downto 0);
     signal HMASTLOCK5  : std_logic;
-    signal HREADY5  : std_logic;
+    signal HREADY5     : std_logic;
 
     -- Internal AHB Lite Interface Signals for IP6 (SOSSI)
     signal HSEL_S6     : std_logic;  -- Slave select signal for Slave 1 (I2C)
@@ -264,7 +261,7 @@ architecture Behavioral of SoC_Subsystem is
     signal HTRANS6     : std_logic_vector(1 downto 0);
     signal HPROT6      : std_logic_vector(3 downto 0);
     signal HMASTLOCK6  : std_logic;
-    signal HREADY6  : std_logic;
+    signal HREADY6     : std_logic;
 
 begin
     -- Instantiate IP1 (I2C)
@@ -283,6 +280,8 @@ begin
             HTRANS     => HTRANS1,
             HPROT      => HPROT1,
             HMASTLOCK  => HMASTLOCK1,
+            HREADY     => HREADY1,
+            HSELx      => HSEL_s1,
             SDA        => SDA1,
             SCL        => SCL1
         );
@@ -303,6 +302,8 @@ begin
             HTRANS     => HTRANS2,
             HPROT      => HPROT2,
             HMASTLOCK  => HMASTLOCK2,
+            HREADY     => HREADY2,
+            HSELx      => HSEL_s2,
             MOSI       => MOSI2,
             MISO       => MISO2,
             SCK        => SCK2,
@@ -325,6 +326,8 @@ begin
             HTRANS     => HTRANS3,
             HPROT      => HPROT3,
             HMASTLOCK  => HMASTLOCK3,
+            HREADY     => HREADY3,
+            HSELx      => HSEL_s3,
             Data       => Data,
             PIXCLK     => PIXCLK,
             HSYNC      => HSYNC,
@@ -348,6 +351,8 @@ begin
             HTRANS     => HTRANS4,
             HPROT      => HPROT4,
             HMASTLOCK  => HMASTLOCK4,
+            HREADY     => HREADY4,
+            HSELx      => HSEL_s4,
             TXD        => TXD4,
             RXD        => RXD4,
             IRQ        => IRQ
@@ -369,6 +374,8 @@ begin
             HTRANS     => HTRANS5,
             HPROT      => HPROT5,
             HMASTLOCK  => HMASTLOCK5,
+            HREADY     => HREADY5,
+            HSELx      => HSEL_s5,
             SSI_CLK    => SSI_CLK,
             FSS        => FSS,
             TXD        => TXD5,
@@ -391,6 +398,8 @@ begin
             HTRANS     => HTRANS6,
             HPROT      => HPROT6,
             HMASTLOCK  => HMASTLOCK6,
+            HREADY     => HREADY6,
+            HSELx      => HSEL_s6,
             SCLK       => SCLK,
             SDOUT      => SDOUT,
             SDIN       => SDIN,
