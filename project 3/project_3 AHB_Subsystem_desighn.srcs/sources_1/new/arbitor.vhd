@@ -128,85 +128,109 @@ begin
             case arb_state is
                 when 0 =>
                     if HSEL_S1 = '1' then
-                        -- Grant access to Slave 1 (I2C)
-                        grant <= "000";  -- Encoded as '000' for I2C
+                        -- Grant access to  (I2C)
+                        grant <= "000";  
                         HADDR_CPU  <= HADDR_S1;
                         HWDATA_CPU <= HWDATA_S1;
+                        HWRITE_CPU <= HWRITE_S1;
+                        HSIZE_CPU  <= HSIZE_S1;
+                        HBURST_CPU  <= HBURST_S1;
                         HRDATA_S1  <= HRDATA_CPU;
                         HREADYOUT_S1  <= HREADY_CPU;
+                        HTRANS_CPU  <= HTRANS_S1;
                         HRESP_S1   <= HRESP_CPU;
                         HPROT_CPU   <= HPROT_S1;
-                        HMASTLOCK_CPU <= '0';  -- No lock
+                        HMASTLOCK_CPU <= HMASTLOCK_S1; 
                     else
                         arb_state <= 1;
                     end if;
                 when 1 =>
                     if HSEL_S2 = '1' then
-                        -- Grant access to Slave 2 (SPI)
-                        grant <= "001";  -- Encoded as '001' for SPI
+                        -- Grant access to (SPI)
+                        grant <= "001";
                         HADDR_CPU  <= HADDR_S2;
                         HWDATA_CPU <= HWDATA_S2;
+                        HWRITE_CPU <= HWRITE_S2;
+                        HSIZE_CPU  <= HSIZE_S2;
+                        HBURST_CPU  <= HBURST_S2;
                         HRDATA_S2  <= HRDATA_CPU;
                         HREADYOUT_S2  <= HREADY_CPU;
+                        HTRANS_CPU  <= HTRANS_S2;
                         HRESP_S2   <= HRESP_CPU;
                         HPROT_CPU   <= HPROT_S2;
-                        HMASTLOCK_CPU <= '0';  -- No lock
+                        HMASTLOCK_CPU <= HMASTLOCK_S2; 
                     else
                         arb_state <= 2;
                     end if;
                 when 2 =>
                     if HSEL_S3 = '1' then
-                        -- Grant access to Slave 3 (CCP)
-                        grant <= "010";  -- Encoded as '010' for CCP
+                        -- Grant access to (CCP)
+                        grant <= "010"; 
                         HADDR_CPU  <= HADDR_S3;
                         HWDATA_CPU <= HWDATA_S3;
+                        HWRITE_CPU <= HWRITE_S3;
+                        HSIZE_CPU  <= HSIZE_S3;
+                        HBURST_CPU  <= HBURST_S3;
                         HRDATA_S3  <= HRDATA_CPU;
                         HREADYOUT_S3  <= HREADY_CPU;
+                        HTRANS_CPU  <= HTRANS_S3;
                         HRESP_S3   <= HRESP_CPU;
                         HPROT_CPU   <= HPROT_S3;
-                        HMASTLOCK_CPU <= '0';  -- No lock
+                        HMASTLOCK_CPU <= HMASTLOCK_S3; 
                     else
                         arb_state <= 3;
                     end if;
                 when 3 =>
                     if HSEL_S4 = '1' then
-                        -- Grant access to Slave 4 (UART)
-                        grant <= "011";  -- Encoded as '011' for UART
+                        -- Grant access to (UART)
+                        grant <= "011";  
                         HADDR_CPU  <= HADDR_S4;
                         HWDATA_CPU <= HWDATA_S4;
+                        HWRITE_CPU <= HWRITE_S4;
+                        HSIZE_CPU  <= HSIZE_S4;
+                        HBURST_CPU  <= HBURST_S4;
                         HRDATA_S4  <= HRDATA_CPU;
                         HREADYOUT_S4  <= HREADY_CPU;
+                        HTRANS_CPU  <= HTRANS_S4;
                         HRESP_S4   <= HRESP_CPU;
                         HPROT_CPU   <= HPROT_S4;
-                        HMASTLOCK_CPU <= '0';  -- No lock
+                        HMASTLOCK_CPU <= HMASTLOCK_S4; 
                     else
                         arb_state <= 4;
                     end if;
                 when 4 =>
                     if HSEL_S5 = '1' then
-                        -- Grant access to Slave 5 (SSI)
-                        grant <= "100";  -- Encoded as '100' for SSI
+                        -- Grant access to (SSI)
+                        grant <= "100";
                         HADDR_CPU  <= HADDR_S5;
                         HWDATA_CPU <= HWDATA_S5;
+                        HWRITE_CPU <= HWRITE_S5;
+                        HSIZE_CPU  <= HSIZE_S5;
+                        HBURST_CPU  <= HBURST_S5;
                         HRDATA_S5  <= HRDATA_CPU;
                         HREADYOUT_S5  <= HREADY_CPU;
+                        HTRANS_CPU  <= HTRANS_S5;
                         HRESP_S5   <= HRESP_CPU;
                         HPROT_CPU   <= HPROT_S5;
-                        HMASTLOCK_CPU <= '0';  -- No lock
+                        HMASTLOCK_CPU <= HMASTLOCK_S5; 
                     else
                         arb_state <= 5;
                     end if;
                 when 5 =>
                     if HSEL_S6 = '1' then
-                        -- Grant access to Slave 6 (SOSSI)
-                        grant <= "101";  -- Encoded as '101' for SOSSI
+                        -- Grant access to (SOSSI)
+                        grant <= "101"; 
                         HADDR_CPU  <= HADDR_S6;
                         HWDATA_CPU <= HWDATA_S6;
+                        HWRITE_CPU <= HWRITE_S6;
+                        HSIZE_CPU  <= HSIZE_S6;
+                        HBURST_CPU  <= HBURST_S6;
                         HRDATA_S6  <= HRDATA_CPU;
                         HREADYOUT_S6  <= HREADY_CPU;
+                        HTRANS_CPU  <= HTRANS_S6;
                         HRESP_S6   <= HRESP_CPU;
                         HPROT_CPU   <= HPROT_S6;
-                        HMASTLOCK_CPU <= '0';  -- No lock
+                        HMASTLOCK_CPU <= HMASTLOCK_S6; 
                     else
                         arb_state <= 0;  -- Go back to Slave 1
                     end if;
