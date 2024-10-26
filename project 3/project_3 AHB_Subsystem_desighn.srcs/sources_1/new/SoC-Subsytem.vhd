@@ -25,9 +25,9 @@ entity SoC_Subsystem is
         SCL1        : in std_logic;      -- Serial Clock Line (input)
 
         -- SPI specific signals
-        MOSI2       : inout std_logic;   -- Master Out Slave In (bidirectional)
-        MISO2       : inout std_logic;   -- Master In Slave Out (bidirectional)
-        SCK2        : in std_logic;      -- Serial Clock (input)
+        MOSI2       : out std_logic;   -- Master Out Slave In (bidirectional)
+        MISO2       : in std_logic;   -- Master In Slave Out (bidirectional)
+        SCK2        : out std_logic;      -- Serial Clock (input)
         SS2         : out std_logic;     -- Slave Select (output)
 
         -- CCP specific pins
@@ -54,7 +54,7 @@ entity SoC_Subsystem is
         SDIN        : in std_logic;       -- Serial Data In (input)
         TX_EN       : in std_logic;       -- Enable Transmission (input)
         RX_EN       : in std_logic;       -- Enable Reception (input)
-        READY       : in std_logic        -- Ready for data (input)
+        READY       : out std_logic        -- Ready for data (input)
         
     );
 end SoC_Subsystem;
@@ -82,7 +82,7 @@ architecture Behavioral of SoC_Subsystem is
             HMASTLOCK_CPU : in  std_logic;                         -- Master lock signal (1 = locked, 0 = unlocked)
             
             -- (I2C) 
-            HSEL_S1       : in  std_logic;                         -- Slave select signal
+            HSEL_S1       : out  std_logic;                         -- Slave select signal
             HADDR_S1      : out  std_logic_vector(31 downto 0);     -- Address bus from slave
             HWRITE_S1     : out  std_logic;                         -- Write signal from slave (1 = write, 0 = read)
             HSIZE_S1      : out  std_logic_vector(2 downto 0);      -- Transfer size from slave
@@ -97,7 +97,7 @@ architecture Behavioral of SoC_Subsystem is
             HREADY_S1     : out  std_logic;                         -- Ready signal from master to slave
             
             -- (SPI) 
-            HSEL_S2       : in  std_logic;
+            HSEL_S2       : out  std_logic;
             HADDR_S2      : out  std_logic_vector(31 downto 0);
             HWRITE_S2     : out  std_logic;
             HSIZE_S2      : out  std_logic_vector(2 downto 0);
@@ -112,7 +112,7 @@ architecture Behavioral of SoC_Subsystem is
             HREADY_S2     : out  std_logic;
             
             -- (CCP)
-            HSEL_S3       : in  std_logic;
+            HSEL_S3       : out  std_logic;
             HADDR_S3      : out  std_logic_vector(31 downto 0);
             HWRITE_S3     : out  std_logic;
             HSIZE_S3      : out  std_logic_vector(2 downto 0);
@@ -127,7 +127,7 @@ architecture Behavioral of SoC_Subsystem is
             HREADY_S3     : out  std_logic;
             
             -- (UART) 
-            HSEL_S4       : in  std_logic;
+            HSEL_S4       : out  std_logic;
             HADDR_S4      : out  std_logic_vector(31 downto 0);
             HWRITE_S4     : out  std_logic;
             HSIZE_S4      : out  std_logic_vector(2 downto 0);
@@ -142,7 +142,7 @@ architecture Behavioral of SoC_Subsystem is
             HREADY_S4     : out  std_logic;
             
             --(SSI) 
-            HSEL_S5       : in  std_logic;
+            HSEL_S5       : out  std_logic;
             HADDR_S5      : out  std_logic_vector(31 downto 0);
             HWRITE_S5     : out  std_logic;
             HSIZE_S5      : out  std_logic_vector(2 downto 0);
@@ -157,7 +157,7 @@ architecture Behavioral of SoC_Subsystem is
             HREADY_S5     : out  std_logic;
             
             -- (SOSSI) 
-            HSEL_S6       : in  std_logic;
+            HSEL_S6       : out  std_logic;
             HADDR_S6      : out  std_logic_vector(31 downto 0);
             HWRITE_S6     : out  std_logic;
             HSIZE_S6      : out  std_logic_vector(2 downto 0);

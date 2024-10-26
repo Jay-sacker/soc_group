@@ -20,9 +20,9 @@ entity IP_SPI is
         HSELx      : in  std_logic;
         
         
-        MOSI       : inout std_logic;  -- Master Out Slave In
-        MISO       : inout std_logic;  -- Master In Slave Out
-        SCK        : in std_logic;     -- Serial Clock
+        MOSI       : out std_logic;  -- Master Out Slave In
+        MISO       : in std_logic;  -- Master In Slave Out
+        SCK        : out std_logic;     -- Serial Clock
         SS         : out std_logic     -- Slave Select
     );
 end IP_SPI;

@@ -21,7 +21,7 @@ entity AHB_Arbiter is
             HMASTLOCK_CPU : in  std_logic;                         -- Master lock signal (1 = locked, 0 = unlocked)
             
             -- (I2C) 
-            HSEL_S1       : in  std_logic;                         -- Slave select signal
+            HSEL_S1       : out  std_logic;                         -- Slave select signal
             HADDR_S1      : out  std_logic_vector(31 downto 0);     -- Address bus from slave
             HWRITE_S1     : out  std_logic;                         -- Write signal from slave (1 = write, 0 = read)
             HSIZE_S1      : out  std_logic_vector(2 downto 0);      -- Transfer size from slave
@@ -36,7 +36,7 @@ entity AHB_Arbiter is
             HREADY_S1     : out  std_logic;                         -- Ready signal from master to slave
             
             -- (SPI) 
-            HSEL_S2       : in  std_logic;
+            HSEL_S2       : out  std_logic;
             HADDR_S2      : out  std_logic_vector(31 downto 0);
             HWRITE_S2     : out  std_logic;
             HSIZE_S2      : out  std_logic_vector(2 downto 0);
@@ -51,7 +51,7 @@ entity AHB_Arbiter is
             HREADY_S2     : out  std_logic;
             
             -- (CCP)
-            HSEL_S3       : in  std_logic;
+            HSEL_S3       : out  std_logic;
             HADDR_S3      : out  std_logic_vector(31 downto 0);
             HWRITE_S3     : out  std_logic;
             HSIZE_S3      : out  std_logic_vector(2 downto 0);
@@ -66,7 +66,7 @@ entity AHB_Arbiter is
             HREADY_S3     : out  std_logic;
             
             -- (UART) 
-            HSEL_S4       : in  std_logic;
+            HSEL_S4       : out  std_logic;
             HADDR_S4      : out  std_logic_vector(31 downto 0);
             HWRITE_S4     : out  std_logic;
             HSIZE_S4      : out  std_logic_vector(2 downto 0);
@@ -81,7 +81,7 @@ entity AHB_Arbiter is
             HREADY_S4     : out  std_logic;
             
             --(SSI) 
-            HSEL_S5       : in  std_logic;
+            HSEL_S5       : out  std_logic;
             HADDR_S5      : out  std_logic_vector(31 downto 0);
             HWRITE_S5     : out  std_logic;
             HSIZE_S5      : out  std_logic_vector(2 downto 0);
@@ -96,7 +96,7 @@ entity AHB_Arbiter is
             HREADY_S5     : out  std_logic;
             
             -- (SOSSI) 
-            HSEL_S6       : in  std_logic;
+            HSEL_S6       : out  std_logic;
             HADDR_S6      : out  std_logic_vector(31 downto 0);
             HWRITE_S6     : out  std_logic;
             HSIZE_S6      : out  std_logic_vector(2 downto 0);
@@ -115,8 +115,7 @@ end AHB_Arbiter;
 
 architecture Behavioral of AHB_Arbiter is
     signal arb_state : integer range 0 to 5 := 0;  -- Round-robin state
-    signal grant     : std_logic_vector(2 downto 0); -- 3-bit Grant signal for each IP (encoded)
-
+    
 begin
 
     -- CPU AHB Master
@@ -124,13 +123,18 @@ begin
     begin
         if HRESETn = '0' then
             arb_state <= 0;
-            grant <= "000";  -- No grants initially
+            HSEL_S1 <= '0'; HSEL_S2 <= '0'; HSEL_S3 <= '0';
+            HSEL_S4 <= '0'; HSEL_S5 <= '0'; HSEL_S6 <= '0';
         elsif rising_edge(HCLK) then
+        -- Clear all HSEL signals initially
+            HSEL_S1 <= '0'; HSEL_S2 <= '0'; HSEL_S3 <= '0';
+            HSEL_S4 <= '0'; HSEL_S5 <= '0'; HSEL_S6 <= '0';
+            --Round Robin Arbitration Logic
             case arb_state is
                 when 0 =>
-                    if HSEL_S1 = '1' then
+                    
                         -- Grant access to  (I2C)
-                        grant <= "000";  
+                         
                         HADDR_S1        <= HADDR_CPU;
                         HWDATA_S1       <= HWDATA_CPU;
                         HWRITE_S1       <= HWRITE_CPU;
@@ -142,13 +146,14 @@ begin
                         HRESP_CPU       <= HRESP_S1;
                         HPROT_S1        <= HPROT_CPU;
                         HMASTLOCK_S1    <= HMASTLOCK_CPU;
-                    else
+                     -- IP 1 is finished with its transfer
+                     -- Move on to next IP in sequence
+                    if HREADYOUT_S1 = '1' then
                         arb_state <= 1;
                     end if;
+                 
                 when 1 =>
-                    if HSEL_S2 = '1' then
-                        -- Grant access to (SPI)
-                        grant <= "001";
+               
                         HADDR_S2        <= HADDR_CPU;
                         HWDATA_S2       <= HWDATA_CPU;
                         HWRITE_S2       <= HWRITE_CPU;
@@ -160,13 +165,12 @@ begin
                         HRESP_CPU       <= HRESP_S2;
                         HPROT_S2        <= HPROT_CPU;
                         HMASTLOCK_S2    <= HMASTLOCK_CPU;
-                    else
+                    --IP 2 has finished its transfer
+                    if HREADYOUT_S2 = '1' then
                         arb_state <= 2;
                     end if;
                 when 2 =>
-                    if HSEL_S3 = '1' then
-                        -- Grant access to (CCP)
-                        grant <= "010"; 
+                    
                         HADDR_S3        <= HADDR_CPU;
                         HWDATA_S3       <= HWDATA_CPU;
                         HWRITE_S3       <= HWRITE_CPU;
@@ -178,13 +182,11 @@ begin
                         HRESP_CPU       <= HRESP_S3;
                         HPROT_S3        <= HPROT_CPU;
                         HMASTLOCK_S3    <= HMASTLOCK_CPU;
-                    else
+                    if HREADYOUT_S3 = '1' then
                         arb_state <= 3;
                     end if;
                 when 3 =>
-                    if HSEL_S4 = '1' then
-                        -- Grant access to (UART)
-                        grant <= "011";  
+                   
                         HADDR_S4        <= HADDR_CPU;
                         HWDATA_S4       <= HWDATA_CPU;
                         HWRITE_S4       <= HWRITE_CPU;
@@ -196,13 +198,11 @@ begin
                         HRESP_CPU       <= HRESP_S4;
                         HPROT_S4        <= HPROT_CPU;
                         HMASTLOCK_S4    <= HMASTLOCK_CPU;
-                    else
+                    if HREADYOUT_S4 = '1' then
                         arb_state <= 4;
                     end if;
                 when 4 =>
-                    if HSEL_S5 = '1' then
-                        -- Grant access to (SSI)
-                        grant <= "100";
+                    
                         HADDR_S5        <= HADDR_CPU;
                         HWDATA_S5       <= HWDATA_CPU;
                         HWRITE_S5       <= HWRITE_CPU;
@@ -214,13 +214,11 @@ begin
                         HRESP_CPU       <= HRESP_S5;
                         HPROT_S5        <= HPROT_CPU;
                         HMASTLOCK_S5    <= HMASTLOCK_CPU;
-                    else
+                    if HREADYOUT_S5 = '1' then
                         arb_state <= 5;
                     end if;
                 when 5 =>
-                    if HSEL_S6 = '1' then
-                        -- Grant access to (SOSSI)
-                        grant <= "101"; 
+                    
                         HADDR_S6        <= HADDR_CPU;
                         HWDATA_S6       <= HWDATA_CPU;
                         HWRITE_S6       <= HWRITE_CPU;
@@ -232,8 +230,8 @@ begin
                         HRESP_CPU       <= HRESP_S6;
                         HPROT_S6        <= HPROT_CPU;
                         HMASTLOCK_S6    <= HMASTLOCK_CPU; 
-                    else
-                        arb_state <= 0;  -- Go back to Slave 1
+                    if HREADYOUT_S6 = '1' then
+                        arb_state <= 0;
                     end if;
                 when others =>
                     arb_state <= 0;

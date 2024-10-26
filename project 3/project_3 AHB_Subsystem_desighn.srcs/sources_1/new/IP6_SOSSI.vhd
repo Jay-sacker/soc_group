@@ -25,7 +25,7 @@ entity IP_SOSSI is
         SDIN        : in std_logic;  -- Serial Data In
         TX_EN       : in std_logic;  -- Enable Transmission
         RX_EN       : in std_logic;  -- Enable Reception
-        READY       : in std_logic   -- Indicates Readiness for data
+        READY       : out std_logic   -- Indicates Readiness for data
     );
 end IP_SOSSI;
 
